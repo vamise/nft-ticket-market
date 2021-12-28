@@ -1,4 +1,4 @@
-# NFT Ticketing Platform
+# NFT Ticketing Marketplace
 
 
 ### Overview 
