@@ -1,3 +1,3 @@
 # NFT TICKET MARKET
 
-#### Ticketing Platform for events that leverages NFTs to create a more secure and decentralized ecosystem for ticket purchasing and resale.
+##### Ticketing Platform for events that leverages NFTs to create a more secure and decentralized ecosystem for ticket purchasing and resale.
