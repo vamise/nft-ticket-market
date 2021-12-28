@@ -1,25 +1,21 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
-import eventFactory from '../proxies/eventFactory';
+import eventFactory from '../proxies/EventFactory';
 import eventToken from '../proxies/EventToken';
 import EventNFT from '../proxies/EventNFT';
 import renderNotification from '../utils/notification-handler';
-import { Input, Button, Text } from '@chakra-ui/react'
 
 let web3;
-const DEFAULT_GAS = 64209;
 
-class Events extends Component {
+class Event extends Component {
   constructor() {
     super();
 
     this.state = {
-      name: '',
-      symbol: '',
-      price: '',
-      supply: '',
-      commission: 20,
-      scalp_protection: 150,
+      name: null,
+      symbol: null,
+      price: null,
+      suppply: null,
     };
 
     web3 = new Web3(window.ethereum);
@@ -30,16 +26,14 @@ class Events extends Component {
       e.preventDefault();
 
       const organizer = await web3.eth.getCoinbase();
-      const { name, symbol, price, supply, commission, scalp_protection } = this.state;
+      const { name, symbol, price, supply } = this.state;
       const { events: { Created: { returnValues: { ntfAddress, marketplaceAddress } } } } = await eventFactory.methods.createNewEvent(
         eventToken._address,
         name,
         symbol,
         web3.utils.toWei(price, 'ether'),
-        supply,
-        commission,
-        scalp_protection
-      ).send({ from: organizer, gas: DEFAULT_GAS });
+        supply
+      ).send({ from: organizer, gas: 6700000 });
 
       renderNotification('success', 'Success', `Event Created Successfully!`);
 
@@ -50,7 +44,7 @@ class Events extends Component {
       let prevCount = 0
 
       if (supply < 30) {
-        const res = await nftInstance.methods.bulkMintTickets(supply, marketplaceAddress).send({ from: organizer, gas: DEFAULT_GAS });
+        const res = await nftInstance.methods.bulkMintTickets(supply, marketplaceAddress).send({ from: organizer, gas: 6700000 });
       } else {
         for (let i = 0; i < batches; i++) {
           prevCount = curCount;
@@ -58,7 +52,7 @@ class Events extends Component {
           if (supply < curCount) {
             batchSupply = supply - prevCount;
           }
-          const res = await nftInstance.methods.bulkMintTickets(batchSupply, marketplaceAddress).send({ from: organizer, gas: DEFAULT_GAS });
+          const res = await nftInstance.methods.bulkMintTickets(batchSupply, marketplaceAddress).send({ from: organizer, gas: 6700000 });
         }
       }
     } catch (err) {
@@ -76,39 +70,24 @@ class Events extends Component {
   render() {
     return (
       <div class="container center" >
-          <div class="container" style={{backgroundColor: '#F5F8FA', backgroundOpacity: 0.5, marginTop: 40, boxShadow: '0px 10px 10px #888888', width: '50%', border: '1px solid black', padding: 30, paddingTop: 20, borderRadius: 10}}>
-            <Text fontSize='4xl' padding={18}>Create New Event</Text>
-            {this.state.name && <Text mb='8px'>Event Name</Text>}
-              <Input style={styles.input} placeholder='Event Name' value={this.state.name} onChange={(event) => this.setState({name: event.target.value})} />
+        <div class="row">
+          <div class="container ">
+            <div class="container ">
+              <h5 style={{ padding: "30px 0px 0px 10px" }}>Create new Event</h5>
+              <form class="" onSubmit={this.onCreateEvent}>
+                <label class="left">Event Name</label><input id="name" class="validate" placeholder="Event Name" type="text" class="validate" name="name" onChange={this.inputChangedHandler} /><br /><br />
+                <label class="left">Event Symbol</label><input id="symbol" class="validate" placeholder="Event Symbol" type="text" className="input-control" name="symbol" onChange={this.inputChangedHandler} /><br /><br />
+                <label class="left">Ticket Price</label><input id="price" placeholder="Ticket Price" type="text" className="input-control" name="price" onChange={this.inputChangedHandler} /><br /><br />
+                <label class="left">Total Supply</label><input id="supply" placeholder="Total SUpply" type="text" className="input-control" name="supply" onChange={this.inputChangedHandler}></input><br /><br />
 
-              {this.state.symbol && <Text mb='8px'>Event Ticker Symbol</Text>}
-              <Input style={styles.input} placeholder='Event Ticker Symbol' value={this.state.symbol}  onChange={(event) => this.setState({symbol: event.target.value})} />
-
-              {this.state.price && <Text mb='8px'>Ticket Price</Text>}
-              <Input style={styles.input} placeholder='Ticket Price' value={this.state.price}  onChange={(event) => this.setState({price: event.target.value})} />
-
-              {this.state.supply && <Text mb='8px'>Total Ticket Amount</Text>}
-              <Input style={styles.input} placeholder='Total Ticket Amount' value={this.state.supply}  onChange={(event) => this.setState({supply: event.target.value})} />
-
-              {this.state.commission && <Text mb='8px'>Commission (%)</Text>}
-              <Input style={styles.input} placeholder='Commission (%)' value={this.state.commission}  onChange={(event) => this.setState({commission: event.target.value})} />
-
-              {this.state.scalp_protection && <Text mb='8px'>Maximum Resale Price (%)</Text>}
-              <Input style={styles.input} placeholder='Maximum Resale Price (%)' value={this.state.scalp_protection}  onChange={(event) => this.setState({scalp_protection: event.target.value})} />
-              <Button colorScheme='teal' size='lg' marginTop={-2} onClick={(e) => this.onCreateEvent(e)}>
-                Create New Event
-              </Button>
+                <button type="submit" className="custom-btn login-btn">Create Event</button>
+              </form>
+            </div>
           </div>
+        </div>
       </div >
     )
   }
 }
-
-const styles = {
-  input: {
-    textAlign: 'center',
-    marginBottom: 35,
-  }
-};
 
 export default Event;

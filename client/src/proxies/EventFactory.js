@@ -1,20 +1,20 @@
 import Provider from './Provider';
-import eventFactoryABI from '../abi/contracts/EventTicketsFactory.json';
+import EventFactoryABI from '../abi/contracts/EventTicketsFactory.json';
 
 const provider = new Provider();
 
-class eventFactory {
-    constructor() {
-        const web3 = provider.web3;
-        const deploymentKey = Object.keys(eventFactoryABI.networks)[0];
+class EventFactory {
+  constructor() {
+    const web3 = provider.web3;
+    const deploymentKey = Object.keys(EventFactoryABI.networks)[0];
 
-        this.instance = new web3.eth.Contract(
-            eventFactoryABI.abi,
-            eventFactoryABI.networks[deploymentKey].address,
-        );
-    }
+    this.instance = new web3.eth.Contract(
+      EventFactoryABI.abi,
+      EventFactoryABI.networks[deploymentKey].address,
+    );
+  }
 
-    getInstance = () => this.instance;
+  getInstance = () => this.instance;
 }
 
 const eventFactory = new eventFactory();
