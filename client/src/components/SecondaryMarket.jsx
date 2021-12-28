@@ -14,9 +14,9 @@ class SecondaryMarket extends Component {
 
     this.state = {
       tickets: [],
-      fests: [],
+      events: [],
       ticket: null,
-      fest: null,
+      event: null,
       marketplace: null,
       price: null,
       renderTickets: [],
@@ -27,27 +27,27 @@ class SecondaryMarket extends Component {
 
   async componentDidMount() {
     await this.updateEvents();
-    if (this.state.fest) {
+    if (this.state.event) {
       await this.updateTickets()
     }
   }
 
   updateTickets = async () => {
     try {
-      const { fest } = this.state;
+      const { event } = this.state;
       const initiator = await web3.eth.getCoinbase();
-      const nftInstance = await EventNFT(this.state.fest);
+      const nftInstance = await EventNFT(this.state.event);
       const saleTickets = await nftInstance.methods.getTicketsForSale().call({ from: initiator });
       const renderData = await Promise.all(saleTickets.map(async ticketId => {
         const { purchasePrice, sellingPrice, forSale } = await nftInstance.methods.getTicketDetails(ticketId).call({ from: initiator });
 
-        const festDetails = await eventFactory.methods.getEventDetails(fest).call({ from: initiator });
-        const [festName] = Object.values(festDetails);
+        const festDetails = await eventFactory.methods.getEventDetails(event).call({ from: initiator });
+        const [eventName] = Object.values(festDetails);
 
         if (forSale) {
           return (
             <tr key={ticketId}>
-              <td class="center">{festName}</td>
+              <td class="center">{eventName}</td>
               <td class="center">{ticketId}</td>
               <td class="center">{web3.utils.fromWei(sellingPrice, 'ether')}</td>
 
@@ -84,15 +84,15 @@ class SecondaryMarket extends Component {
     try {
       const initiator = await web3.eth.getCoinbase();
       const activeEvents = await eventFactory.methods.getActiveEvents().call({ from: initiator });
-      const festDetails = await eventFactory.methods.getEventDetails(activeFests[0]).call({ from: initiator });
-      const renderData = await Promise.all(activeFests.map(async (fest, i) => {
-        const festDetails = await eventFactory.methods.getEventDetails(activeFests[i]).call({ from: initiator });
+      const festDetails = await eventFactory.methods.getEventDetails(activeEvents[0]).call({ from: initiator });
+      const renderData = await Promise.all(activeEvents.map(async (fest, i) => {
+        const festDetails = await eventFactory.methods.getEventDetails(activeEvents[i]).call({ from: initiator });
         return (
           <option key={fest} value={fest} >{festDetails[0]}</option>
         )
       }));
 
-      this.setState({ fests: renderData, fest: activeEvents[0], marketplace: festDetails[4], festName: festDetails[0] });
+      this.setState({ fests: renderData, fest: activeEvents[0], marketplace: festDetails[4], eventName: festDetails[0] });
     } catch (err) {
       renderNotification('danger', 'Error', 'Error while updating the events');
       console.log('Error while updating the events', err);
@@ -106,7 +106,7 @@ class SecondaryMarket extends Component {
 
     const { fest } = this.state;
     const initiator = await web3.eth.getCoinbase();
-    const festDetails = await eventFactory.methods.getEventDetails(fest).call({ from: initiator });
+    const festDetails = await eventFactory.methods.getEventDetails(event).call({ from: initiator });
 
     this.setState({ marketplace: festDetails[4] });
     await this.updateTickets();
@@ -129,7 +129,7 @@ class SecondaryMarket extends Component {
               <h5 style={{ padding: "30px 0px 0px 10px" }}>Secondary Marketplace</h5>
 
               <label class="left">Event</label>
-              <select className="browser-default" name='fest' value={this.state.fest || undefined} onChange={this.onEventChangeHandler}>
+              <select className="browser-default" name='fest' value={this.state.event || undefined} onChange={this.onEventChangeHandler}>
                 <option value="" disabled >Select Event</option>
                 {this.state.fests}
               </select><br /><br />
@@ -139,7 +139,7 @@ class SecondaryMarket extends Component {
               <table id='requests' class="responsive-table striped" >
                 <thead>
                   <tr>
-                    <th key='name' class="center">Fest Name</th>
+                    <th key='name' class="center">Event Name</th>
                     <th key='ticketId' class="center">Ticket Id</th>
                     <th key='cost' class="center">Cost(in EVENT)</th>
                     <th key='purchase' class="center">Purchase</th>

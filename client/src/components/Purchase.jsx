@@ -27,15 +27,15 @@ class Purchase extends Component {
     try {
       const initiator = await web3.eth.getCoinbase();
       const activeEvents = await eventFactory.methods.getActiveEvents().call({ from: initiator });
-      const fests = await Promise.all(activeFests.map(async fest => {
-        const festDetails = await eventFactory.methods.getEventDetails(fest).call({ from: initiator });
-        const [festName, festSymbol, ticketPrice, totalSupply, marketplace] = Object.values(festDetails);
-        const nftInstance = await EventNFT(fest);
+      const fests = await Promise.all(activeEvents.map(async fest => {
+        const festDetails = await eventFactory.methods.getEventDetails(event).call({ from: initiator });
+        const [eventName, eventSymbol, ticketPrice, totalSupply, marketplace] = Object.values(festDetails);
+        const nftInstance = await EventNFT(event);
         const saleId = await nftInstance.methods.getNextSaleTicketId().call({ from: initiator });
 
         return (
           <tr key={fest}>
-            <td class="center">{festName}</td>
+            <td class="center">{eventName}</td>
             <td class="center">{web3.utils.fromWei(ticketPrice, 'ether')}</td>
             <td class="center">{totalSupply - saleId}</td>
 

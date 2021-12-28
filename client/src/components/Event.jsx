@@ -31,7 +31,7 @@ class Events extends Component {
 
       const organizer = await web3.eth.getCoinbase();
       const { name, symbol, price, supply, commission, scalp_protection } = this.state;
-      const { events: { Created: { returnValues: { ntfAddress, marketplaceAddress } } } } = await eventFactory.methods.createNewFest(
+      const { events: { Created: { returnValues: { ntfAddress, marketplaceAddress } } } } = await eventFactory.methods.createNewEvent(
         eventToken._address,
         name,
         symbol,

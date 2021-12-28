@@ -6,8 +6,8 @@ import "./EventMarketplace.sol";
 
 contract EventTicketsFactory is Ownable {
     struct Event {
-        string festName;
-        string festSymbol;
+        string eventName;
+        string eventSymbol;
         uint256 ticketPrice;
         uint256 totalSupply;
         address marketplace;
@@ -19,19 +19,19 @@ contract EventTicketsFactory is Ownable {
     event Created(address ntfAddress, address marketplaceAddress);
 
     // Creates new NFT and a marketplace for its purchase
-    function createNewFest(
+    function createNewEvent(
         EventToken token,
-        string memory festName,
-        string memory festSymbol,
+        string memory eventName,
+        string memory eventSymbol,
         uint256 ticketPrice,
         uint256 totalSupply,
         uint256 commission,
         uint256 maxSell
     ) public onlyOwner returns (address) {
-        EventNFT newFest =
+        EventNFT newEvent =
             new EventNFT(
-                festName,
-                festSymbol,
+                eventName,
+                eventSymbol,
                 ticketPrice,
                 totalSupply,
                 commission,
@@ -40,14 +40,14 @@ contract EventTicketsFactory is Ownable {
             );
 
         EventMarketplace newMarketplace =
-            new EventMarketplace(token, newFest);
+            new EventMarketplace(token, newEvent);
 
-        address newEventAddress = address(newFest);
+        address newEventAddress = address(newEvent);
 
         activeEvents.push(newEventAddress);
         activeEventsMapping[newEventAddress] = Event({
-            festName: festName,
-            festSymbol: festSymbol,
+            eventName: eventName,
+            eventSymbol: eventSymbol,
             ticketPrice: ticketPrice,
             totalSupply: totalSupply,
             marketplace: address(newMarketplace)
@@ -76,8 +76,8 @@ contract EventTicketsFactory is Ownable {
         )
     {
         return (
-            activeEventsMapping[eventAddress].festName,
-            activeEventsMapping[eventAddress].festSymbol,
+            activeEventsMapping[eventAddress].eventName,
+            activeEventsMapping[eventAddress].eventSymbol,
             activeEventsMapping[eventAddress].ticketPrice,
             activeEventsMapping[eventAddress].totalSupply,
             activeEventsMapping[eventAddress].marketplace

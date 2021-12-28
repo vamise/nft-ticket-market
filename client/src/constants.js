@@ -1,12 +1,12 @@
 export const EventNFTABI = [{
         "inputs": [{
                 "internalType": "string",
-                "name": "festName",
+                "name": "eventName",
                 "type": "string"
             },
             {
                 "internalType": "string",
-                "name": "FestSymbol",
+                "name": "EventSymbol",
                 "type": "string"
             },
             {

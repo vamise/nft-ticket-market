@@ -23,9 +23,9 @@ class MyTickets extends Component {
 
     this.state = {
       tickets: [],
-      fests: [],
+      events: [],
       ticket: null,
-      fest: null,
+      event: null,
       marketplace: null,
       price: null,
       test: null,
@@ -43,7 +43,7 @@ class MyTickets extends Component {
       e.preventDefault();
       const initiator = await web3.eth.getCoinbase();
       const { ticket, price, marketplace } = this.state;
-      const nftInstance = await EventNFT(this.state.fest);
+      const nftInstance = await EventNFT(this.state.event);
       await nftInstance.methods.setSaleDetails(ticket, web3.utils.toWei(price, 'ether'), marketplace).send({ from: initiator, gas: 6700000 });
 
       renderNotification('success', 'Success', `Ticket is listed for sale in secondary market!`);
@@ -57,15 +57,15 @@ class MyTickets extends Component {
     try {
       const initiator = await web3.eth.getCoinbase();
       const activeEvents = await eventFactory.methods.getActiveEvents().call({ from: initiator });
-      const festDetails = await eventFactory.methods.getEventDetails(activeFests[0]).call({ from: initiator });
-      const renderData = await Promise.all(activeFests.map(async (fest, i) => {
-        const festDetails = await eventFactory.methods.getEventDetails(activeFests[i]).call({ from: initiator });
+      const festDetails = await eventFactory.methods.getEventDetails(activeEvents[0]).call({ from: initiator });
+      const renderData = await Promise.all(activeEvents.map(async (event, i) => {
+        const festDetails = await eventFactory.methods.getEventDetails(activeEvents[i]).call({ from: initiator });
         return (
-          <option key={fest} value={fest} >{festDetails[0]}</option>
+          <option key={event} value={event} >{festDetails[0]}</option>
         )
       }));
 
-      this.setState({ fests: renderData, fest: activeEvents[0], marketplace: festDetails[4] });
+      this.setState({ fests: renderData, event: activeEvents[0], marketplace: festDetails[4] });
       this.updateTickets();
       console.log('state fests:', renderData);
     } catch (err) {
@@ -77,7 +77,7 @@ class MyTickets extends Component {
   updateTickets = async () => {
     try {
       const initiator = await web3.eth.getCoinbase();
-      const nftInstance = await EventNFT(this.state.fest);
+      const nftInstance = await EventNFT(this.state.event);
       const tickets = await nftInstance.methods.getTicketsOfCustomer(initiator).call({ from: initiator });
       const renderData = tickets.map((ticket, i) => (
         <option key={ticket} value={ticket} >{ticket}</option>
@@ -97,11 +97,11 @@ class MyTickets extends Component {
       state[e.target.name] = e.target.value;
       this.setState(state);
 
-      const { fest } = this.state;
-      await this.updateTickets(fest);
+      const { event } = this.state;
+      await this.updateTickets(event);
 
       const initiator = await web3.eth.getCoinbase();
-      const festDetails = await eventFactory.methods.getEventDetails(fest).call({ from: initiator });
+      const festDetails = await eventFactory.methods.getEventDetails(event).call({ from: initiator });
 
       this.setState({ marketplace: festDetails[4] });
     } catch (err) {
@@ -144,7 +144,7 @@ class MyTickets extends Component {
           <form class="" onSubmit={this.onListForSale}>
 
             <label class="left">Events</label>
-            <select className="browser-default" name='fest' value={this.state.fest || undefined} onChange={this.onEventChangeHandler}>
+            <select className="browser-default" name='fest' value={this.state.event || undefined} onChange={this.onEventChangeHandler}>
               <option value="" disabled >Select Event</option>
               {this.state.fests}
             </select><br /><br />
