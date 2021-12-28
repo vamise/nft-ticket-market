@@ -1,0 +1,15 @@
+FROM node:16-alpine
+
+WORKDIR /app
+
+COPY ./package.json .
+COPY ./truffle-config.js .
+COPY contracts ./contracts/
+COPY ./migrations ./migrations/
+
+# RUN export NODE_OPTIONS=--openssl-legacy-provider
+
+RUN npm i
+RUN npm install -g truffle@5.1.65
+
+CMD ["truffle","migrate", "--reset"]
