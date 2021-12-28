@@ -27,9 +27,9 @@ class Purchase extends Component {
     try {
       const initiator = await web3.eth.getCoinbase();
       const activeEvents = await eventFactory.methods.getActiveEvents().call({ from: initiator });
-      const fests = await Promise.all(activeEvents.map(async fest => {
-        const festDetails = await eventFactory.methods.getEventDetails(event).call({ from: initiator });
-        const [eventName, eventSymbol, ticketPrice, totalSupply, marketplace] = Object.values(festDetails);
+      const events = await Promise.all(activeEvents.map(async fest => {
+        const eventDetails = await eventFactory.methods.getEventDetails(event).call({ from: initiator });
+        const [eventName, eventSymbol, ticketPrice, totalSupply, marketplace] = Object.values(eventDetails);
         const nftInstance = await EventNFT(event);
         const saleId = await nftInstance.methods.getNextSaleTicketId().call({ from: initiator });
 

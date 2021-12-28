@@ -57,15 +57,15 @@ class MyTickets extends Component {
     try {
       const initiator = await web3.eth.getCoinbase();
       const activeEvents = await eventFactory.methods.getActiveEvents().call({ from: initiator });
-      const festDetails = await eventFactory.methods.getEventDetails(activeEvents[0]).call({ from: initiator });
+      const eventDetails = await eventFactory.methods.getEventDetails(activeEvents[0]).call({ from: initiator });
       const renderData = await Promise.all(activeEvents.map(async (event, i) => {
-        const festDetails = await eventFactory.methods.getEventDetails(activeEvents[i]).call({ from: initiator });
+        const eventDetails = await eventFactory.methods.getEventDetails(activeEvents[i]).call({ from: initiator });
         return (
-          <option key={event} value={event} >{festDetails[0]}</option>
+          <option key={event} value={event} >{eventDetails[0]}</option>
         )
       }));
 
-      this.setState({ fests: renderData, event: activeEvents[0], marketplace: festDetails[4] });
+      this.setState({ fests: renderData, event: activeEvents[0], marketplace: eventDetails[4] });
       this.updateTickets();
       console.log('state fests:', renderData);
     } catch (err) {
@@ -101,9 +101,9 @@ class MyTickets extends Component {
       await this.updateTickets(event);
 
       const initiator = await web3.eth.getCoinbase();
-      const festDetails = await eventFactory.methods.getEventDetails(event).call({ from: initiator });
+      const eventDetails = await eventFactory.methods.getEventDetails(event).call({ from: initiator });
 
-      this.setState({ marketplace: festDetails[4] });
+      this.setState({ marketplace: eventDetails[4] });
     } catch (err) {
       console.log('Error while tickets for event', err.message);
       renderNotification('danger', 'Error', 'Error while tickets for event');

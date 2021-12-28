@@ -41,8 +41,8 @@ class SecondaryMarket extends Component {
       const renderData = await Promise.all(saleTickets.map(async ticketId => {
         const { purchasePrice, sellingPrice, forSale } = await nftInstance.methods.getTicketDetails(ticketId).call({ from: initiator });
 
-        const festDetails = await eventFactory.methods.getEventDetails(event).call({ from: initiator });
-        const [eventName] = Object.values(festDetails);
+        const eventDetails = await eventFactory.methods.getEventDetails(event).call({ from: initiator });
+        const [eventName] = Object.values(eventDetails);
 
         if (forSale) {
           return (
@@ -84,15 +84,15 @@ class SecondaryMarket extends Component {
     try {
       const initiator = await web3.eth.getCoinbase();
       const activeEvents = await eventFactory.methods.getActiveEvents().call({ from: initiator });
-      const festDetails = await eventFactory.methods.getEventDetails(activeEvents[0]).call({ from: initiator });
+      const eventDetails = await eventFactory.methods.getEventDetails(activeEvents[0]).call({ from: initiator });
       const renderData = await Promise.all(activeEvents.map(async (fest, i) => {
-        const festDetails = await eventFactory.methods.getEventDetails(activeEvents[i]).call({ from: initiator });
+        const eventDetails = await eventFactory.methods.getEventDetails(activeEvents[i]).call({ from: initiator });
         return (
-          <option key={fest} value={fest} >{festDetails[0]}</option>
+          <option key={fest} value={fest} >{eventDetails[0]}</option>
         )
       }));
 
-      this.setState({ fests: renderData, fest: activeEvents[0], marketplace: festDetails[4], eventName: festDetails[0] });
+      this.setState({ fests: renderData, fest: activeEvents[0], marketplace: eventDetails[4], eventName: eventDetails[0] });
     } catch (err) {
       renderNotification('danger', 'Error', 'Error while updating the events');
       console.log('Error while updating the events', err);
@@ -104,11 +104,11 @@ class SecondaryMarket extends Component {
     state[e.target.name] = e.target.value;
     this.setState(state);
 
-    const { fest } = this.state;
+    const { event } = this.state;
     const initiator = await web3.eth.getCoinbase();
-    const festDetails = await eventFactory.methods.getEventDetails(event).call({ from: initiator });
+    const eventDetails = await eventFactory.methods.getEventDetails(event).call({ from: initiator });
 
-    this.setState({ marketplace: festDetails[4] });
+    this.setState({ marketplace: eventDetails[4] });
     await this.updateTickets();
   }
 
