@@ -27,14 +27,14 @@ class Purchase extends Component {
     try {
       const initiator = await web3.eth.getCoinbase();
       const activeEvents = await eventFactory.methods.getActiveEvents().call({ from: initiator });
-      const events = await Promise.all(activeEvents.map(async fest => {
+      const events = await Promise.all(activeEvents.map(async event => {
         const eventDetails = await eventFactory.methods.getEventDetails(event).call({ from: initiator });
         const [eventName, eventSymbol, ticketPrice, totalSupply, marketplace] = Object.values(eventDetails);
         const nftInstance = await EventNFT(event);
         const saleId = await nftInstance.methods.getNextSaleTicketId().call({ from: initiator });
 
         return (
-          <tr key={fest}>
+          <tr key={event}>
             <td class="center">{eventName}</td>
             <td class="center">{web3.utils.fromWei(ticketPrice, 'ether')}</td>
             <td class="center">{totalSupply - saleId}</td>
@@ -44,7 +44,7 @@ class Purchase extends Component {
         );
       }));
 
-      this.setState({ events: fests });
+      this.setState({ events: events });
     } catch (err) {
       renderNotification('danger', 'Error', err.message);
       console.log('Error while updating the fetivals', err);

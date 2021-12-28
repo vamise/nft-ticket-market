@@ -65,9 +65,9 @@ class MyTickets extends Component {
         )
       }));
 
-      this.setState({ fests: renderData, event: activeEvents[0], marketplace: eventDetails[4] });
+      this.setState({ events: renderData, event: activeEvents[0], marketplace: eventDetails[4] });
       this.updateTickets();
-      console.log('state fests:', renderData);
+      console.log('state events:', renderData);
     } catch (err) {
       renderNotification('danger', 'Error', 'Error while updating the events');
       console.log('Error while updating the events', err);
@@ -144,9 +144,9 @@ class MyTickets extends Component {
           <form class="" onSubmit={this.onListForSale}>
 
             <label class="left">Events</label>
-            <select className="browser-default" name='fest' value={this.state.event || undefined} onChange={this.onEventChangeHandler}>
+            <select className="browser-default" name='event' value={this.state.event || undefined} onChange={this.onEventChangeHandler}>
               <option value="" disabled >Select Event</option>
-              {this.state.fests}
+              {this.state.events}
             </select><br /><br />
 
             <label class="left">Ticket Id</label>

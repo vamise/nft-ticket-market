@@ -85,14 +85,14 @@ class SecondaryMarket extends Component {
       const initiator = await web3.eth.getCoinbase();
       const activeEvents = await eventFactory.methods.getActiveEvents().call({ from: initiator });
       const eventDetails = await eventFactory.methods.getEventDetails(activeEvents[0]).call({ from: initiator });
-      const renderData = await Promise.all(activeEvents.map(async (fest, i) => {
+      const renderData = await Promise.all(activeEvents.map(async (event, i) => {
         const eventDetails = await eventFactory.methods.getEventDetails(activeEvents[i]).call({ from: initiator });
         return (
-          <option key={fest} value={fest} >{eventDetails[0]}</option>
+          <option key={event} value={event} >{eventDetails[0]}</option>
         )
       }));
 
-      this.setState({ fests: renderData, fest: activeEvents[0], marketplace: eventDetails[4], eventName: eventDetails[0] });
+      this.setState({ events: renderData, event: activeEvents[0], marketplace: eventDetails[4], eventName: eventDetails[0] });
     } catch (err) {
       renderNotification('danger', 'Error', 'Error while updating the events');
       console.log('Error while updating the events', err);
@@ -129,9 +129,9 @@ class SecondaryMarket extends Component {
               <h5 style={{ padding: "30px 0px 0px 10px" }}>Secondary Marketplace</h5>
 
               <label class="left">Event</label>
-              <select className="browser-default" name='fest' value={this.state.event || undefined} onChange={this.onEventChangeHandler}>
+              <select className="browser-default" name='event' value={this.state.event || undefined} onChange={this.onEventChangeHandler}>
                 <option value="" disabled >Select Event</option>
-                {this.state.fests}
+                {this.state.events}
               </select><br /><br />
 
               <h4 class="center">Purchase Tickets</h4>
