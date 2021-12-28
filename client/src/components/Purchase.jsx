@@ -79,7 +79,7 @@ class Purchase extends Component {
           <thead>
             <tr>
               <th key='name' class="center">Name</th>
-              <th key='price' class="center">Price(in FEST)</th>
+              <th key='price' class="center">Price(in EVENT)</th>
               <th key='left' class="center">Tickets Left</th>
               <th key='purchase' class="center">Purchase</th>
             </tr>

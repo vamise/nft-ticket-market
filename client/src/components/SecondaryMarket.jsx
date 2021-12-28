@@ -141,7 +141,7 @@ class SecondaryMarket extends Component {
                   <tr>
                     <th key='name' class="center">Fest Name</th>
                     <th key='ticketId' class="center">Ticket Id</th>
-                    <th key='cost' class="center">Cost(in FEST)</th>
+                    <th key='cost' class="center">Cost(in EVENT)</th>
                     <th key='purchase' class="center">Purchase</th>
                   </tr>
                 </thead>
